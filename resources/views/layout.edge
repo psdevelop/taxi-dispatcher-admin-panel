@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{-- bootstrap style sheet script --}}
+    <link type="text/css" rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <title>Taxi Dispatcher Admin Panel</title>
+    {{ style('style') }}
+</head>
+<body>
+    @include('inc/navbar')
+    <div class="container">
+      @!section('content')
+    </div>
+
+    {{-- bootstrap javascript scripts --}}
+    {{ script('jquery-3.4.1.min') }}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    {{ script('app') }}
+</body>
+</html>
