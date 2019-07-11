@@ -94,3 +94,7 @@ p {
 .auth-form, .logout-form {
   text-align: center;
 }
+
+.auth-form a, .logout-form a {
+  color: #6ac;
+}

@@ -4,21 +4,21 @@
     <div class="title"></div>
     <div class="subtitle">
       <p>Добро пожаловать в панель администрирования Taxi Dispatcher</p>
-      @if(isLoggedIn)
+      @if(!isLoggedIn)
       <p>
         Войдите, чтобы начать работу.
       </p>
       @endif
     </div>
     @if(isLoggedIn)
-    <div class="auth-form">
-      <input type="text" id="login" name="login" />
-      <input type="text" id="password" name="password" />
-      <a id="login-button" href="#">Войти</a>
-    </div>
-    @else
     <div class="logout-form">=={{isLoggedIn}}==
       <a id="logout-button" href="#">Выйти</a>
+    </div>
+    @else
+    <div class="auth-form">
+      <input type="text" id="login" name="login" value="psdevelop@yandex.ru" />
+      <input type="password" id="password" name="password" value="psdevelop4psw" />
+      <a id="login-button" href="#">Войти</a>
     </div>
     @endif
 @endsection

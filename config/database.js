@@ -82,7 +82,7 @@ module.exports = {
   mssql: {
     client: 'mssql',
     connection: {
-      host: '127.0.0.1',
+      host: '192.168.1.90',
       port: 1433,
       user: 'admin_panel',
       password: 'admin_panel',
