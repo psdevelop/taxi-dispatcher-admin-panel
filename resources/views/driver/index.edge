@@ -1,0 +1,39 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Позывной</th>
+      <th scope="col">Логин</th>
+      <th scope="col">Баланс</th>
+      <th scope="col">Гос. номер</th>
+      <th scope="col">Марка</th>
+      <th scope="col">Гар.№</th>
+      <th scope="col">Класс</th>
+      <th scope="col">Тип договора</th>
+      <th scope="col">Ном.удост.</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(driver in driversList)
+    <tr>
+      <th scope="row">-</th>
+      <td>{{driver.Pozyvnoi}}</td>
+      <td>{{driver.REMOTE_LOGIN}}</td>
+      <td>{{driver.DRIVER_BALANCE}}</td>
+      <td>{{driver.Gos_nomernoi_znak}}</td>
+      <td>{{driver.Marka_avtomobilya}}</td>
+      <td>{{driver.Garagn_nomer}}</td>
+      <td>{{driver.Klass_vodit}}</td>
+      <td>{{driver.Licenzionnaya_kart}}</td>
+      <td>{{driver.Udostoverenie_nom}}</td>
+      <td><a href="#">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+
+@endsection

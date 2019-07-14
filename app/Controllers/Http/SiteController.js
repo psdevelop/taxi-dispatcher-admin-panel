@@ -23,10 +23,10 @@ class SiteController {
       let clientsData = user && user.username && clients.get(user.username)
       token = clientsData && clientsData.access_token && clientsData.access_token.token
 
-      console.log(JSON.stringify(clients.all()))
+      //console.log(JSON.stringify(clients.all()))
       isLoggedIn = token ? isLoggedIn : false;
       //console.log(JSON.stringify(user))
-      console.log('[' + token + ']');
+      //console.log('[' + token + ']');
     } catch (error) {
       console.log('Missing or invalid jwt token' + error)
     }

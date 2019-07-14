@@ -98,3 +98,7 @@ p {
 .auth-form a, .logout-form a {
   color: #6ac;
 }
+
+.dict__header {
+  color: #faf;
+}
