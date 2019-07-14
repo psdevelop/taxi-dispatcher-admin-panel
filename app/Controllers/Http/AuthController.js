@@ -2,7 +2,7 @@
 
 const Env = use('Env')
 const User = use('App/Models/User')
-const clients = require('./clients.js')
+const clients = require('../../../clients')
 
 class AuthController {
   async register({request, auth, response}) {
@@ -27,10 +27,10 @@ class AuthController {
         try {
           if (await auth.attempt(email, password)) {
             let user = await User.findBy('email', email)
-            let accessToken = await auth.generate(user)
+            let accessToken = await auth.withRefreshToken().generate(user)
 
             //Env.set('TOKEN', accessToken.token)
-            clients.add(user.username, accessToken)
+            clients.set(user.username, {"user":user, "access_token": accessToken})
             return response.json({"user":user, "access_token": accessToken})
           }
 
@@ -41,22 +41,61 @@ class AuthController {
   }
 
   async logout({request, auth, response}) {
-    const refreshToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIsImlhdCI6MTU2Mjg3OTk3Mn0.Ih1EtNqqlS6pknSIYHJyqHyJ0dJNc9jvNo-hOprcdF4'//request.input('refreshToken');
-        if(!refreshToken){
+      const user = await auth.getUser(),
+        clientsData = user && user.username && clients.get(user.username),
+        accessTokens = clientsData && clientsData.access_token,
+        token = accessTokens && accessTokens.token,
+        refreshToken = accessTokens && accessTokens.refreshToken,
+        clientsDataUser = clientsData && clientsData.user,
+        email = clientsDataUser && clientsDataUser.email,
+        password = clientsDataUser && clientsDataUser.password
 
-            // You can throw any exception you want here
-            throw BadRequestException.invoke(`Refresh Token missing`);
+      let accessToken = ""
+
+      console.log(JSON.stringify(user))
+      console.log(JSON.stringify(clientsData))
+      console.log(refreshToken)
+
+      if(!refreshToken || !email || !password){
+        // You can throw any exception you want here
+        throw Exception.invoke(`Refresh Token missing`);
+      }
+
+      const result = await auth.authenticator('jwt')
+        .revokeTokens([token, refreshToken], true)
+
+      clients.delete(user.username)
+
+      /*try {
+        if (await auth.attempt(email, password)) {
+          let accessToken = await auth.withRefreshToken().generate(user)
+
+          //Env.set('TOKEN', accessToken.token)
+          //clients.set(user.username, {"user":user, "access_token": accessToken})
+          //return response.json({"user":user, "access_token": accessToken})
+          return response.status(200).json(result)
         }
 
-      //  await auth
-      //    .authenticator('jwt')
-      //    .revokeTokens([refreshToken], true)
+      }
+      catch (e) {
+        return response.json({message: 'You first need to register!' + e})
+      }*/
 
-      await auth
-        .newRefreshToken()
-        .generateForRefreshToken(refreshToken, true)
+      return response.status(200).json(result)
 
-      return response.send({status : 200, "message" : 'success'})
+      //await auth
+      //  .authenticator('jwt')
+      //  .revokeTokens([refreshToken], true)
+
+      //await auth
+      //  .newRefreshToken()
+      //  .generateForRefreshToken(refreshToken, true)
+
+      //let accessToken = await auth.generate(user)
+
+      //clients.set(user.username, {"user":user, "access_token": accessToken})
+
+      //return response.send({status : 200, "message" : 'success'})
   }
 }
 

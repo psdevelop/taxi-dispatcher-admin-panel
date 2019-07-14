@@ -3,6 +3,8 @@
 let clients = {};
 
 module.exports = {
-  add: (login, data) => clients[login] = data,
-  get: (login) => clients.login || null
+  set: (login, data) => clients[login] = data,
+  get: (login) => { return clients[login] || null },
+  all: () => { return clients },
+  delete: (login) => clients[login] = null
 }

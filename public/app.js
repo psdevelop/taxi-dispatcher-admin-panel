@@ -25,14 +25,18 @@ $('a#login-button').click(function(e) {
 $('a#logout-button').click(function(e) {
   e.preventDefault();
 
+  const token = $(e.target).closest('div.logout-form')
+    .find('input#auth-token').val();
+
   $.ajax({
     type: "POST",
     url: '/auth/logout',
     data: {
-      refreshToken: true
+      refreshToken: true,
+      token: token
     },
     success: function (data) {
-      window.location = '/'
+      window.location = '/?token=' + token
     }
   });
 

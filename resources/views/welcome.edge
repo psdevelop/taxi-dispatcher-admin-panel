@@ -11,7 +11,8 @@
       @endif
     </div>
     @if(isLoggedIn)
-    <div class="logout-form">=={{isLoggedIn}}==
+    <div class="logout-form">
+      <input id="auth-token" type="hidden" value="{{token()}}" />
       <a id="logout-button" href="#">Выйти</a>
     </div>
     @else

@@ -2,7 +2,7 @@
 
 const Env = use('Env')
 const edge = require('edge.js')
-const clients = require('./clients.js')
+const clients = require('../../../clients')
 
 class SiteController {
   async index({view, request, auth, response}) {
@@ -20,16 +20,20 @@ class SiteController {
       //"password":"$2a$10$RBLL4iq0KZTMNKoleTefEeLCiQRV4de/WqD.khrxCvL7G4bG5k9Ny",
       //"created_at":"2019-07-10 13:40:57","updated_at":"2019-07-10 13:40:57"}
       let user = await auth.getUser()
-      let userData = user && user.username && clients.get(user.username)
-      token = userData && userData.token
-      console.log(JSON.stringify(user));
+      let clientsData = user && user.username && clients.get(user.username)
+      token = clientsData && clientsData.access_token && clientsData.access_token.token
+
+      console.log(JSON.stringify(clients.all()))
+      isLoggedIn = token ? isLoggedIn : false;
+      //console.log(JSON.stringify(user))
+      console.log('[' + token + ']');
     } catch (error) {
-      console.log('Missing or invalid jwt token')
+      console.log('Missing or invalid jwt token' + error)
     }
 
-    token && edge.global('token', function(){
+    edge.global('token', function(){
       //return Env.get('TOKEN', '');
-      return token;
+      return token || 1;
     })
 
     return view.render('welcome', {
