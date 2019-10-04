@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Driver = use('App/Models/Driver');
+const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
@@ -94,6 +95,18 @@ class DriverController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
+    //let driver = await Driver.find('BOLD_ID', params.id)
+    let driver = await Database
+      .table('Voditelj')
+      .where('BOLD_ID', params.id)
+      .first()
+
+    console.log(driver);
+
+    return view.render('driver.edit', {
+            title: 'Водители',
+            driver: driver
+        })
   }
 
   /**
