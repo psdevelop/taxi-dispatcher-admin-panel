@@ -4,18 +4,34 @@
     <a href="/posts" class="btn btn-primary">Go Back</a>
     <hr>
     <h2>Edit Post</h2>
-    <form action="{{ '/posts/' + post.id + '?_method=PUT' }}" method="POST">
+    <form action="{{ '/drivers/' + driver.BOLD_ID + '?_method=PUT' }}" method="POST">
         {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
         <div class="form-group">
-            <label>Title</label>
-            <input type="text" class="form-control" value="{{ post.title }}" placeholder="Post title" name="title">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('title'), hasErrorFor('title')) }}
+            <label>Позывной</label>
+            <input type="text" class="form-control" value="{{ driver.Pozyvnoi }}" placeholder="Позывной" name="Pozyvnoi">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Pozyvnoi'), hasErrorFor('Pozyvnoi')) }}
         </div>
         <div class="form-group">
+            <label>Логин</label>
+            <input type="text" class="form-control" value="{{ driver.REMOTE_LOGIN }}" placeholder="Логин" name="REMOTE_LOGIN">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('REMOTE_LOGIN'), hasErrorFor('REMOTE_LOGIN')) }}
+        </div>
+        <div class="form-group">
+            <label>Гос. номерной знак</label>
+            <input type="text" class="form-control" value="{{ driver.Gos_nomernoi_znak }}" placeholder="Гос. номерной знак" name="Gos_nomernoi_znak">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Gos_nomernoi_znak'), hasErrorFor('Gos_nomernoi_znak')) }}
+        </div>
+        <div class="form-group">
+            <label>Марка автомобиля</label>
+            <input type="text" class="form-control" value="{{ driver.Marka_avtomobilya }}" placeholder="Марка автомобиля" name="Marka_avtomobilya">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Marka_avtomobilya'), hasErrorFor('Marka_avtomobilya')) }}
+        </div>
+        <!--<div class="form-group">
             <label>Body</label>
             <textarea class="form-control" rows="3" name="body" placeholder="Body">{{ post.body }}</textarea>
             {{ elIf('<span class="text-danger">$self</span>', getErrorFor('body'), hasErrorFor('body')) }}
-        </div>
+        </div>-->
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 @endsection

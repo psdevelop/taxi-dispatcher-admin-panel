@@ -104,7 +104,7 @@ class DriverController {
     console.log(driver);
 
     return view.render('driver.edit', {
-            title: 'Водители',
+            title: 'Изменение водителя',
             driver: driver
         })
   }
@@ -118,19 +118,26 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const name = request.input('name')
-    const email = request.input('email')
-    const title = request.input('title')
-    const tel = request.input('tel')
+    const Pozyvnoi = request.input('Pozyvnoi')
+    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
+    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
+    const Marka_avtomobilya = request.input('Marka_avtomobilya')
 
-    let contact = await Contact.find(params.id)
+    Database.table('Voditelj')
+      .where('BOLD_ID', params.id)
+      .update({
+        'Pozyvnoi': Pozyvnoi,
+        'REMOTE_LOGIN': REMOTE_LOGIN,
+        'Gos_nomernoi_znak': Gos_nomernoi_znak,
+        'Marka_avtomobilya': Marka_avtomobilya
+      });
 
-    contact.name = name
-    contact.email = email
-    contact.title = title
-    contact.tel = tel
-    await contact.save()
-    return response.json(contact)
+    let driver = await Database
+      .table('Voditelj')
+      .where('BOLD_ID', params.id)
+      .first()
+
+    return response.json(driver)
   }
 
   /**
