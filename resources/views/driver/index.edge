@@ -7,13 +7,39 @@
       <th scope="col">#</th>
       <th scope="col">Позывной</th>
       <th scope="col">Логин</th>
+      <th scope="col">Разр. приложение</th>
+      <th scope="col">Разр. перемещение сектора</th>
+      <th scope="col">GPS мониторинг</th>
+      <th scope="col">GTS Аккаунт ID</th>
+      <th scope="col">GTS ID Устройства</th>
+      <th scope="col">Исп. дин баланс</th>
+      <th scope="col">Блокир. по дин. балансу</th>
       <th scope="col">Баланс</th>
+      <th scope="col">Индивидуальный процент (0,1 - 10%)</th>
+      <th scope="col">Отчислять ежедневно</th>
+      <th scope="col">Сумма ежедн. отчета</th>
+      <th scope="col">Требовать GPS</th>
+      <th scope="col">Звук1</th>
+      <th scope="col">Звук2</th>
+      <th scope="col">Звук3</th>
+      <th scope="col">Звук4</th>
+      <th scope="col">Звук5</th>
+      <th scope="col">Звук6</th>
+      <th scope="col">Звук7</th>
+      <th scope="col">Звук8</th>
+      <th scope="col">Звук9</th>
+      <th scope="col">Звук10</th>
+      <th scope="col">Дополнительные пар-ры инициализации</th>
+      <th scope="col">Фикс. в день + фикс. за заявку</th>
+      <th scope="col">Посл. lat</th>
+      <th scope="col">Посл. lon</th>
       <th scope="col">Гос. номер</th>
       <th scope="col">Марка</th>
       <th scope="col">Гар.№</th>
       <th scope="col">Класс</th>
       <th scope="col">Тип договора</th>
       <th scope="col">Ном.удост.</th>
+      <th scope="col">Номер телефона</th>
       <th scope="col">Действие</th>
     </tr>
   </thead>
@@ -23,13 +49,39 @@
       <th scope="row">-</th>
       <td>{{driver.Pozyvnoi}}</td>
       <td>{{driver.REMOTE_LOGIN}}</td>
+      <td>{{driver.ITS_REMOTE_CLIENT ? 'YES' : 'NO'}}</td>
+      <td>{{driver.EN_MOVING ? 'YES' : 'NO'}}</td>
+      <td>{{driver.USE_GPS ? 'YES' : 'NO'}}</td>
+      <td>{{driver.GTSS_ACCT_ID}}</td>
+      <td>{{driver.GTSS_DEV_ID}}</td>
+      <td>{{driver.use_dyn_balance ? 'YES' : 'NO'}}</td>
+      <td>{{driver.rlock_on_calc_debt ? 'YES' : 'NO'}}</td>
       <td>{{driver.DRIVER_BALANCE}}</td>
+      <td>{{driver.Individ_procent}}</td>
+      <td>{{driver.manual_day_sale ? 'YES' : 'NO'}}</td>
+      <td>{{driver.day_payment}}</td>
+      <td>{{driver.require_gps ? 'YES' : 'NO'}}</td>
+      <td>{{driver.avar1}}</td>
+      <td>{{driver.avar2}}</td>
+      <td>{{driver.avar3}}</td>
+      <td>{{driver.avar4}}</td>
+      <td>{{driver.avar5}}</td>
+      <td>{{driver.avar6}}</td>
+      <td>{{driver.avar7}}</td>
+      <td>{{driver.avar8}}</td>
+      <td>{{driver.avar9}}</td>
+      <td>{{driver.avar10}}</td>
+      <td>{{driver.addit_rem_params}}</td>
+      <td>{{driver.fix_order_pay_with_daily_pay ? 'YES' : 'NO'}}</td>
+      <td>{{driver.last_lat}}</td>
+      <td>{{driver.last_lon}}</td>
       <td>{{driver.Gos_nomernoi_znak}}</td>
       <td>{{driver.Marka_avtomobilya}}</td>
       <td>{{driver.Garagn_nomer}}</td>
       <td>{{driver.Klass_vodit}}</td>
       <td>{{driver.Licenzionnaya_kart}}</td>
       <td>{{driver.Udostoverenie_nom}}</td>
+      <td>{{driver.phone_number}}</td>
       <td><a href="/drivers/{{driver.BOLD_ID}}?token={{token()}}">Изменить</a></td>
     </tr>
     @endeach
