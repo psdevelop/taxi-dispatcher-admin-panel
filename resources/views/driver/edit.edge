@@ -3,7 +3,8 @@
 @section('content')
     <a href="/posts" class="btn btn-primary">Go Back</a>
     <hr>
-    <h2>Edit Post</h2>
+    <div class="edit-form__div">
+    <h2>Редактирование водителя</h2>
     <form action="{{ '/drivers/' + driver.BOLD_ID + '?_method=PUT' }}" method="POST">
         {{ csrfField() }}
         <input type="hidden" value="{{token()}}" name="token"/>
@@ -152,11 +153,26 @@
             <input type="text" class="form-control" value="{{ driver.phone_number }}" placeholder="Номер телефона" name="phone_number">
             {{ elIf('<span class="text-danger">$self</span>', getErrorFor('phone_number'), hasErrorFor('phone_number')) }}
         </div>
+        <div class="form-group">
+            <label>Привязка к фирме</label>
+            <select name="otnositsya_k_gruppe" id="otnositsya_k_gruppe">
+              @each(company in companiesList)
+                <option value="{{ company.BOLD_ID }}"
+                  @if(driver.otnositsya_k_gruppe == company.BOLD_ID)
+                    selected="selected"
+                  @endif
+                >
+                  {{ company.Naimenovanie }}
+                </option>
+              @endeach
+            <select>
+        </div>
         <!--<div class="form-group">
             <label>Body</label>
             <textarea class="form-control" rows="3" name="body" placeholder="Body">{{ post.body }}</textarea>
             {{ elIf('<span class="text-danger">$self</span>', getErrorFor('body'), hasErrorFor('body')) }}
         </div>-->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
+    </div>
 @endsection

@@ -40,6 +40,7 @@
       <th scope="col">Тип договора</th>
       <th scope="col">Ном.удост.</th>
       <th scope="col">Номер телефона</th>
+      <th scope="col">Фирма</th>
       <th scope="col">Действие</th>
     </tr>
   </thead>
@@ -82,6 +83,7 @@
       <td>{{driver.Licenzionnaya_kart}}</td>
       <td>{{driver.Udostoverenie_nom}}</td>
       <td>{{driver.phone_number}}</td>
+      <td>{{driver.companyName}}</td>
       <td><a href="/drivers/{{driver.BOLD_ID}}?token={{token()}}">Изменить</a></td>
     </tr>
     @endeach

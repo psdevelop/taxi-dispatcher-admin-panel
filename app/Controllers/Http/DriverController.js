@@ -25,14 +25,17 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Driver.query().fetch()
+    let drivers = await Database
+      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
+      .from('Voditelj')
+      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
     return view.render('driver.index', {
             title: 'Водители',
-            driversList: drivers.toJSON()
+            driversList: drivers
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -101,11 +104,17 @@ class DriverController {
       .where('BOLD_ID', params.id)
       .first()
 
+    let companiesList =  await Database
+      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
+      .from('Gruppa_voditelei')
+      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+
     console.log(driver);
 
     return view.render('driver.edit', {
             title: 'Изменение водителя',
-            driver: driver
+            driver: driver,
+            companiesList: companiesList
         })
   }
 
