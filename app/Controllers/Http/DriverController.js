@@ -123,7 +123,7 @@ class DriverController {
     const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
     const Marka_avtomobilya = request.input('Marka_avtomobilya')
 
-    Database.table('Voditelj')
+    const affectedRows = await Database.table('Voditelj')
       .where('BOLD_ID', params.id)
       .update({
         'Pozyvnoi': Pozyvnoi,
@@ -137,7 +137,8 @@ class DriverController {
       .where('BOLD_ID', params.id)
       .first()
 
-    return response.json(driver)
+    response.redirect('/drivers?token=' + request.input('token'))
+    //return response.json(affectedRows)
   }
 
   /**
