@@ -38,9 +38,24 @@
       <th scope="col">Гар.№</th>
       <th scope="col">Класс</th>
       <th scope="col">Тип договора</th>
+      <th scope="col">Вид деятельности (частн., наем., стажер)</th>
+      <th scope="col">Тип, номер рации</th>
       <th scope="col">Ном.удост.</th>
       <th scope="col">Номер телефона</th>
       <th scope="col">Фирма</th>
+      <th scope="col">Год выпуска</th>
+      <th scope="col">Кузов</th>
+      <th scope="col">Услуги водителя</th>
+      <th scope="col">Доп. инфо</th>
+      <th scope="col">Машина компании</th>
+      <th scope="col">Полное имя</th>
+      <th scope="col">ИД Реферала</th>
+      <th scope="col">Дата назн. реферала</th>
+      <th scope="col">Свой ИД</th>
+      <th scope="col">Постоянный рейтинг</th>
+      <th scope="col">Срок действ. ежедн. платежа (0-24ч.)</th>
+      <th scope="col">Ступень рейтинга</th>
+      <th scope="col">Не назначать по радиусу</th>
       <th scope="col">Действие</th>
     </tr>
   </thead>
@@ -57,7 +72,7 @@
       <td>{{driver.GTSS_DEV_ID}}</td>
       <td>{{driver.use_dyn_balance ? 'YES' : 'NO'}}</td>
       <td>{{driver.rlock_on_calc_debt ? 'YES' : 'NO'}}</td>
-      <td>{{driver.DRIVER_BALANCE}}</td>
+      <td>{{driver.DRIVER_BALANCE}}</td> <!-- not edit -->
       <td>{{driver.Individ_procent}}</td>
       <td>{{driver.manual_day_sale ? 'YES' : 'NO'}}</td>
       <td>{{driver.day_payment}}</td>
@@ -74,16 +89,31 @@
       <td>{{driver.avar10}}</td>
       <td>{{driver.addit_rem_params}}</td>
       <td>{{driver.fix_order_pay_with_daily_pay ? 'YES' : 'NO'}}</td>
-      <td>{{driver.last_lat}}</td>
-      <td>{{driver.last_lon}}</td>
+      <td>{{driver.last_lat}}</td> <!-- not edit -->
+      <td>{{driver.last_lon}}</td> <!-- not edit -->
       <td>{{driver.Gos_nomernoi_znak}}</td>
       <td>{{driver.Marka_avtomobilya}}</td>
       <td>{{driver.Garagn_nomer}}</td>
       <td>{{driver.Klass_vodit}}</td>
       <td>{{driver.Licenzionnaya_kart}}</td>
+      <td>{{driver.cvet_avto}}</td>
+      <td>{{driver.tip_nomer_racii}}</td>
       <td>{{driver.Udostoverenie_nom}}</td>
       <td>{{driver.phone_number}}</td>
       <td>{{driver.companyName}}</td>
+      <td>{{driver.auto_bith_year}}</td> <!-- int -->
+      <td>{{driver.auto_material}}</td>
+      <td>{{driver.dr_cargo_services}}</td>
+      <td>{{driver.addit_cargo_info}}</td>
+      <td>{{driver.is_our ? 'YES' : 'NO'}}</td>
+      <td>{{driver.full_name}}</td>
+      <td>{{driver.referral_driver_id}}</td>
+      <td>{{driver.referral_set_date}}</td>
+      <td>{{driver.BOLD_ID}}</td> <!-- not edit -->
+      <td>{{driver.rating}}</td>
+      <td>{{driver.daily_payment_expire}}</td>
+      <td>{{driver.rating_level}}</td> <!-- not edit -->
+      <td>{{driver.dont_auto_asgn_by_radius ? 'YES' : 'NO'}}</td>
       <td><a href="/drivers/{{driver.BOLD_ID}}?token={{token()}}">Изменить</a></td>
     </tr>
     @endeach
