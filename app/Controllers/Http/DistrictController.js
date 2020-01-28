@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const District = use('App/Models/District');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class DistrictController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,19 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let districts = await Database
+      .raw('select ds.* , sp1.Naimenovanie as companyName, ' +
+        ' sp2.Naimenovanie as defaultSectorName from DISTRICTS ds ' +
+        ' left Join Spravochnik sp1 on ds.company_id = sp1.BOLD_ID ' +
+        ' left Join Spravochnik sp2 on ds.default_sector_id = sp2.BOLD_ID')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('district.index', {
+            title: 'Районы',
+            districtsList: districts
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -63,10 +63,13 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+    const userId = await Database
+      .table('DISTRICTS')
+      .insert({name: 'НОВЫЙ РАЙОН'})
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    console.log(userId);
+
+    response.redirect('/districts?token=' + request.input('token'))
   }
 
   /**
@@ -92,9 +95,9 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let district = await Database
+      .table('DISTRICTS')
+      .where('id', params.id)
       .first()
 
     let companiesList =  await Database
@@ -102,12 +105,16 @@ class DriverController {
       .from('Gruppa_voditelei')
       .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
 
-    console.log(driver);
+    let sectorsList =  await Database
+      .select('Sektor_raboty.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
+      .from('Sektor_raboty')
+      .innerJoin('Spravochnik', 'Sektor_raboty.BOLD_ID', 'Spravochnik.BOLD_ID')
 
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('district.edit', {
+            title: 'Изменение района',
+            district: district,
+            companiesList: companiesList,
+            sectorsList: sectorsList
         })
   }
 
@@ -120,26 +127,21 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const name = request.input('name')
+    const default_sector_id = request.input('default_sector_id')
+    const address = request.input('address')
+    const company_id = request.input('company_id')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    const affectedRows = await Database.table('DISTRICTS')
+      .where('id', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'name': name,
+        'default_sector_id': default_sector_id,
+        'address': address,
+        'company_id': company_id
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/districts?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +158,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = DistrictController

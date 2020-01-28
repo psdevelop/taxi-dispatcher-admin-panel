@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const Setting = use('App/Models/Driver');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class SettingController {
   constructor() {
     this.data = {}
   }
@@ -92,9 +92,9 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let setting = await Database
+      .table('Objekt_vyborki_otchyotnosti')
+      .where('Tip_objekta', 'for_drivers')
       .first()
 
     let companiesList =  await Database
@@ -102,11 +102,9 @@ class DriverController {
       .from('Gruppa_voditelei')
       .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
 
-    console.log(driver);
-
-    return view.render('driver.edit', {
+    return view.render('setting.edit', {
             title: 'Изменение водителя',
-            driver: driver,
+            setting: setting,
             companiesList: companiesList
         })
   }
@@ -120,26 +118,17 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const DAYLY_SALE = request.input('DAYLY_SALE')
+    const MIN_DEBET = request.input('MIN_DEBET')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    const affectedRows = await Database.table('Objekt_vyborki_otchyotnosti')
+      .where('BOLD_ID', request.input('id'))
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'DAYLY_SALE': DAYLY_SALE,
+        'MIN_DEBET': MIN_DEBET
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/settings/0/?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +145,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = SettingController

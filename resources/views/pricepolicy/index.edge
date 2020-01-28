@@ -1,0 +1,34 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/pricepolicies/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать тарифный план</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Сокращение</th>
+      <th scope="col">По умолчанию</th>
+      <th scope="col">Привязка к фирме</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(policy in policiesList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{policy.POLICY_NAME}}</td>
+      <td>{{policy.SHORT_NAME}}</td>
+      <td>{{policy.IF_DEF ? 'YES' : 'NO'}}</td>
+      <td>{{policy.companyName}}</td>
+      <td><a href="/pricepolicies/{{policy.ID}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

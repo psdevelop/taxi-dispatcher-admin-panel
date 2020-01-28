@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const PricePolicy = use('App/Models/PricePolicy');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class PricePolicyController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,18 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let policies = await Database
+      .raw('select pp.* , sp1.Naimenovanie as companyName ' +
+        ' from PRICE_POLICY pp ' +
+        ' left Join Spravochnik sp1 on pp.company_id = sp1.BOLD_ID ')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('pricepolicy.index', {
+            title: 'Тарифные планы',
+            policiesList: policies
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -63,10 +62,13 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+    const userId = await Database
+      .table('DISTRICTS')
+      .insert({name: 'НОВЫЙ РАЙОН'})
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    console.log(userId);
+
+    response.redirect('/districts?token=' + request.input('token'))
   }
 
   /**
@@ -92,9 +94,9 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let policy = await Database
+      .table('PRICE_POLICY')
+      .where('ID', params.id)
       .first()
 
     let companiesList =  await Database
@@ -102,11 +104,9 @@ class DriverController {
       .from('Gruppa_voditelei')
       .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
 
-    console.log(driver);
-
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
+    return view.render('pricepolicy.edit', {
+            title: 'Изменение тарифного плана',
+            policy: policy,
             companiesList: companiesList
         })
   }
@@ -120,26 +120,21 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const POLICY_NAME = request.input('POLICY_NAME')
+    const company_id = request.input('company_id')
+    const SHORT_NAME = request.input('SHORT_NAME')
+    const IF_DEF = request.input('IF_DEF')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    const affectedRows = await Database.table('PRICE_POLICY')
+      .where('ID', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'POLICY_NAME': POLICY_NAME,
+        'company_id': company_id,
+        'SHORT_NAME': SHORT_NAME,
+        'IF_DEF': IF_DEF
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/pricepolicies?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +151,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = PricePolicyController

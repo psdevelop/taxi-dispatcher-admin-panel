@@ -1,0 +1,70 @@
+@layout('layout')
+
+@section('content')
+    <a href="/abonents/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование абонента</h2>
+    <form action="{{ '/abonents/' + abonent.BOLD_ID + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Номер абонента</label>
+              <input type="text" class="form-control" value="{{ abonent.Korpus }}" placeholder="Номер абонента" name="Korpus">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Korpus'), hasErrorFor('Korpus')) }}
+          </div>
+          <div class="form-group col-md-6">
+            <label>Привязка к опции</label>
+            <select name="option_id" id="option_id" class="form-control">
+              @each(option in optionsList)
+                <option value="{{ option.ID }}"
+                  @if(abonent.option_id == option.ID)
+                    selected="selected"
+                  @endif
+                >
+                  {{ option.OPTION_NAME }}
+                </option>
+              @endeach
+            <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Фамилия</label>
+              <input type="text" class="form-control" value="{{ abonent.Familiya }}" placeholder="Фамилия" name="Familiya">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Familiya'), hasErrorFor('Familiya')) }}
+          </div>
+          <div class="form-group col-md-6">
+            <label>Имя</label>
+            <input type="text" class="form-control" value="{{ abonent.Imya }}" placeholder="Имя" name="Imya">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Imya'), hasErrorFor('Imya')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Отчество</label>
+              <input type="text" class="form-control" value="{{ abonent.Otchestvo }}" placeholder="Отчество" name="Otchestvo">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Otchestvo'), hasErrorFor('Otchestvo')) }}
+          </div>
+          <div class="form-group col-md-6">
+            <label>Телефон</label>
+            <input type="text" class="form-control" value="{{ abonent.Rabochii_telefon }}" placeholder="Телефон" name="Rabochii_telefon">
+            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Rabochii_telefon'), hasErrorFor('Rabochii_telefon')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Адрес</label>
+              <input type="text" class="form-control" value="{{ abonent.Ulica }}" placeholder="Адрес" name="Ulica">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Ulica'), hasErrorFor('Ulica')) }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

@@ -3,6 +3,7 @@
 const Env = use('Env')
 const edge = require('edge.js')
 const clients = require('../../../clients')
+const dateFormat = require('../../../dateFormat')
 
 class SiteController {
   async index({view, request, auth, response}) {
@@ -35,6 +36,14 @@ class SiteController {
       //return Env.get('TOKEN', '');
       return token || 1;
     })
+
+    edge.global('dateFormat', function(date, mask, utc){
+      return dateFormat.dateFormat(date, mask, utc);
+    })
+
+    if (isLoggedIn && !request.input('main', '')) {
+      response.redirect('/drivers?token=' + token)
+    }
 
     return view.render('welcome', {
             isLoggedIn: isLoggedIn

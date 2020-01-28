@@ -1,0 +1,443 @@
+@layout('layout')
+
+@section('content')
+    <a href="/drivers/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование настроек</h2>
+    <form action="/settings/0/?id={{setting.BOLD_ID}}&_method=PUT" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <input type="hidden" value="{{setting.BOLD_ID}}" name="id"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Ежедневная оплата, общая</label>
+              <input type="text" class="form-control" value="{{ setting.DAYLY_SALE }}" placeholder="Ежедневная оплата, общая" name="DAYLY_SALE">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('DAYLY_SALE'), hasErrorFor('DAYLY_SALE')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Минимальный баланс</label>
+              <input type="text" class="form-control" value="{{ setting.MIN_DEBET }}" placeholder="Минимальный баланс" name="MIN_DEBET">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('MIN_DEBET'), hasErrorFor('MIN_DEBET')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Процент отчисления, общий</label>
+              <input type="text" class="form-control" value="{{ setting.Procent_otchisleniya }}" placeholder="Процент отчисления, общий" name="Procent_otchisleniya">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Procent_otchisleniya'), hasErrorFor('Procent_otchisleniya')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Вести учет по аб. номерам</label>
+              <select id="use_ab_account" name="use_ab_account" class="form-control">
+                <option value="0"
+                @if(setting.use_ab_account != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.use_ab_account == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Показывать призовые по телефону</label>
+              <select id="view_bonuses" name="view_bonuses" class="form-control">
+                <option value="0"
+                @if(setting.view_bonuses != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.view_bonuses == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Показывать призовые по аб. номерам</label>
+              <select id="view_ab_bonuses" name="view_ab_bonuses" class="form-control">
+                <option value="0"
+                @if(setting.view_ab_bonuses != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.view_ab_bonuses == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Использовать приз 1</label>
+              <select id="Ispoljz_priz_1" name="Ispoljz_priz_1" class="form-control">
+                <option value="0"
+                @if(setting.Ispoljz_priz_1 != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.Ispoljz_priz_1 == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Призовое количество 1</label>
+              <input type="text" class="form-control" value="{{ setting.Prizovoe_kolichestvo_1 }}" placeholder="Призовое количество 1" name="Prizovoe_kolichestvo_1">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Prizovoe_kolichestvo_1'), hasErrorFor('Prizovoe_kolichestvo_1')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Использовать приз 2</label>
+              <select id="Ispoljz_priz_2" name="Ispoljz_priz_2" class="form-control">
+                <option value="0"
+                @if(setting.Ispoljz_priz_2 != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.Ispoljz_priz_2 == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Призовое количество 2</label>
+              <input type="text" class="form-control" value="{{ setting.Prizovoe_kolichestvo_2 }}" placeholder="Призовое количество 2" name="Prizovoe_kolichestvo_2">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Prizovoe_kolichestvo_2'), hasErrorFor('Prizovoe_kolichestvo_2')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Включить OpenGTS мониторинг</label>
+              <select id="use_opengts_monitoring" name="use_opengts_monitoring" class="form-control">
+                <option value="0"
+                @if(setting.use_opengts_monitoring != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.use_opengts_monitoring == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Адрес OpenGTS сервера</label>
+              <input type="text" class="form-control" value="{{ setting.GPS_SRV_ADR }}" placeholder="Адрес OpenGTS сервера" name="GPS_SRV_ADR">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('GPS_SRV_ADR'), hasErrorFor('GPS_SRV_ADR')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Включить постоянный отсыл координат</label>
+              <select id="on_gps_signaling" name="on_gps_signaling" class="form-control">
+                <option value="0"
+                @if(setting.on_gps_signaling != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.on_gps_signaling == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Автоперемещение водителей по секторам</label>
+              <select id="auto_detect_driver_sector" name="auto_detect_driver_sector" class="form-control">
+                <option value="0"
+                @if(setting.auto_detect_driver_sector != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.auto_detect_driver_sector == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Не показ. аукцион др. фирм (по р-ну заказа)</label>
+              <select id="dnts_wait_oth_company" name="dnts_wait_oth_company" class="form-control">
+                <option value="0"
+                @if(setting.dnts_wait_oth_company != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.dnts_wait_oth_company == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Не показывать аукцион без фирмы</label>
+              <select id="dnts_wait_wtout_company" name="dnts_wait_wtout_company" class="form-control">
+                <option value="0"
+                @if(setting.dnts_wait_wtout_company != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.dnts_wait_wtout_company == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Показ. аукц. всех секторов при ручн. откр.</label>
+              <select id="show_all_sectwait_manual" name="show_all_sectwait_manual" class="form-control">
+                <option value="0"
+                @if(setting.show_all_sectwait_manual != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.show_all_sectwait_manual == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Показ. аукцион с разделением по секторам</label>
+              <select id="wait_dlg_with_sectors" name="wait_dlg_with_sectors" class="form-control">
+                <option value="0"
+                @if(setting.wait_dlg_with_sectors != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.wait_dlg_with_sectors == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Показ. аукц. только своего сектора</label>
+              <select id="hide_other_sect_wait_orders" name="hide_other_sect_wait_orders" class="form-control">
+                <option value="0"
+                @if(setting.hide_other_sect_wait_orders != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.hide_other_sect_wait_orders == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Не сбрасывать вр. простоя вод. при смене сектора</label>
+              <select id="dont_reset_dr_queue" name="dont_reset_dr_queue" class="form-control">
+                <option value="0"
+                @if(setting.dont_reset_dr_queue != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.dont_reset_dr_queue == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Выставлять тариф заказа по водителю</label>
+              <select id="autotarif_by_driver" name="autotarif_by_driver" class="form-control">
+                <option value="0"
+                @if(setting.autotarif_by_driver != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.autotarif_by_driver == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Выставление тарифа заказа по тар. плану</label>
+              <select id="autotarif_by_tplan" name="autotarif_by_tplan" class="form-control">
+                <option value="0"
+                @if(setting.autotarif_by_tplan != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.autotarif_by_tplan == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Переназнач. тариф заказа при смене водителя</label>
+              <select id="overtar_by_driver" name="overtar_by_driver" class="form-control">
+                <option value="0"
+                @if(setting.overtar_by_driver != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.overtar_by_driver == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Сообщ. клиенту по подтвежд. заказа водителем</label>
+              <select id="clsms_ordground" name="clsms_ordground" class="form-control">
+                <option value="0"
+                @if(setting.clsms_ordground != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(setting.clsms_ordground == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Сообщ. по оффлайн-заявке (доб. через F3)</label>
+              <select id="clsms_offlinedr_assign" name="clsms_offlinedr_assign" class="form-control">
+                <option value="0"
+                @if(setting.clsms_offlinedr_assign != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(setting.clsms_offlinedr_assign == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Сообщ. клиенту по нажатию На точке</label>
+              <select id="clsms_onplaceto" name="clsms_onplaceto" class="form-control">
+                <option value="0"
+                @if(setting.clsms_onplaceto != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(setting.clsms_onplaceto == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Авторассыл в аукцион при необработке</label>
+              <select id="auto_bsector_longorders" name="auto_bsector_longorders" class="form-control">
+                <option value="0"
+                @if(setting.auto_bsector_longorders != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(setting.auto_bsector_longorders == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Время ожидания перед авторассылом (сек)</label>
+              <input type="number" class="form-control" value="{{ setting.auto_bsector_longtime }}" placeholder="Время ожидания перед авторассылом" name="auto_bsector_longtime">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('auto_bsector_longtime'), hasErrorFor('auto_bsector_longtime')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Авторассыл онлайн в аукцион при необработке</label>
+              <select id="auto_bsector_onlineorders" name="auto_bsector_onlineorders" class="form-control">
+                <option value="0"
+                @if(setting.auto_bsector_onlineorders != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(setting.auto_bsector_onlineorders == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Время ожидания перед авторассылом онлайн (сек)</label>
+              <input type="number" class="form-control" value="{{ setting.auto_bsector_onlinetime }}" placeholder="Время ожидания перед авторассылом" name="auto_bsector_onlinetime">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('auto_bsector_onlinetime'), hasErrorFor('auto_bsector_onlinetime')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Бесплатное время поездки (мин.)</label>
+              <input type="number" class="form-control" value="{{ setting.start_free_time }}" placeholder="Бесплатное время поездки" name="start_free_time">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('start_free_time'), hasErrorFor('start_free_time')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Бесплатное расстояние поездки (м.)</label>
+              <input type="number" class="form-control" value="{{ setting.start_free_distance }}" placeholder="Бесплатное расстояние поездки" name="start_free_distance">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('start_free_distance'), hasErrorFor('start_free_distance')) }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

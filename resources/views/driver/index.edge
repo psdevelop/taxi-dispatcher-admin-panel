@@ -1,7 +1,11 @@
 @layout('layout')
 @section('content')
   <h2 class="dict__header">{{ title }}</h2>
-  <table class="table table-dark">
+  <form action="/drivers/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать пустого водителя</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -62,7 +66,7 @@
   <tbody>
     @each(driver in driversList)
     <tr>
-      <th scope="row">-</th>
+      <td scope="row">-</td>
       <td>{{driver.Pozyvnoi}}</td>
       <td>{{driver.REMOTE_LOGIN}}</td>
       <td>{{driver.ITS_REMOTE_CLIENT ? 'YES' : 'NO'}}</td>
@@ -108,7 +112,7 @@
       <td>{{driver.is_our ? 'YES' : 'NO'}}</td>
       <td>{{driver.full_name}}</td>
       <td>{{driver.referral_driver_id}}</td>
-      <td>{{driver.referral_set_date}}</td>
+      <td>{{dateFormat(driver.referral_set_date, 'yyyy-mm-dd')}}</td>
       <td>{{driver.BOLD_ID}}</td> <!-- not edit -->
       <td>{{driver.rating}}</td>
       <td>{{driver.daily_payment_expire}}</td>
@@ -119,5 +123,6 @@
     @endeach
   </tbody>
 </table>
+</div>
 
 @endsection

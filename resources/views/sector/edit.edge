@@ -1,0 +1,58 @@
+@layout('layout')
+
+@section('content')
+    <a href="/drivers/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование сектора</h2>
+    <form action="{{ '/sectors/' + sector.BOLD_ID + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Наименование</label>
+              <input type="text" class="form-control" value="{{ sector.sectorName }}" placeholder="Наименование" name="sectorName">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('sectorName'), hasErrorFor('sectorName')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к компании</label>
+              <select name="company_id" id="company_id" class="form-control">
+                @each(company in companiesList)
+                  <option value="{{ company.BOLD_ID }}"
+                    @if(sector.company_id == company.BOLD_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ company.Naimenovanie }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Порядок</label>
+              <input type="text" class="form-control" value="{{ sector.Podskazka_na_sektore }}" placeholder="Порядок" name="Podskazka_na_sektore">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Podskazka_na_sektore'), hasErrorFor('Podskazka_na_sektore')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к району</label>
+              <select name="district_id" id="district_id" class="form-control">
+                @each(district in districtsList)
+                  <option value="{{ district.id }}"
+                    @if(sector.district_id == district.id)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ district.name }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

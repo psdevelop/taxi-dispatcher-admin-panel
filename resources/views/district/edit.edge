@@ -1,0 +1,58 @@
+@layout('layout')
+
+@section('content')
+    <a href="/districts/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование района</h2>
+    <form action="{{ '/districts/' + district.id + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Наименование</label>
+              <input type="text" class="form-control" value="{{ district.name }}" placeholder="Наименование" name="name">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('name'), hasErrorFor('name')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к сектору</label>
+              <select name="default_sector_id" id="default_sector_id" class="form-control">
+                @each(sector in sectorsList)
+                  <option value="{{ sector.BOLD_ID }}"
+                    @if(district.default_sector_id == sector.BOLD_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ sector.Naimenovanie }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Геопрефикс</label>
+              <input type="text" class="form-control" value="{{ district.address }}" placeholder="Геопрефикс" name="address">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('address'), hasErrorFor('address')) }}
+          </div>
+          <div class="form-group col-md-6">
+            <label>Привязка к компании</label>
+            <select name="company_id" id="company_id" class="form-control">
+              @each(company in companiesList)
+                <option value="{{ company.BOLD_ID }}"
+                  @if(district.company_id == company.BOLD_ID)
+                    selected="selected"
+                  @endif
+                >
+                  {{ company.Naimenovanie }}
+                </option>
+              @endeach
+            <select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

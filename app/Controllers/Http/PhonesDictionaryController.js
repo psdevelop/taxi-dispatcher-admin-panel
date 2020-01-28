@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const PhonesDictionary = use('App/Models/Company');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class PhonesDictionaryController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,21 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let phones = await Database
+      .select('Sootvetstvie_parametrov_zakaza.*', 'Spravochnik.Naimenovanie as sectorName',
+        'ORDER_OPTION.OPTION_NAME as OPTION_NAME')
+      .from('Sootvetstvie_parametrov_zakaza')
+      .leftJoin('Spravochnik', 'Sootvetstvie_parametrov_zakaza.otnositsya_k_sektoru', 'Spravochnik.BOLD_ID')
+      .leftJoin('ORDER_OPTION', 'Sootvetstvie_parametrov_zakaza.option_id', 'ORDER_OPTION.ID')
+      .orderBy('Sootvetstvie_parametrov_zakaza.Telefon_klienta', 'asc')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('phone.index', {
+            title: 'Телефонный справочник',
+            phonesList: phones
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -64,9 +66,9 @@ class DriverController {
    */
   async store ({ request, response }) {
     await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+      .raw('EXEC [dbo].[InsertNewPhoneAddrRetID] @bold_id = -1')
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/phones?token=' + request.input('token'))
   }
 
   /**
@@ -92,22 +94,26 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
+    let phone = await Database
+      .table('Sootvetstvie_parametrov_zakaza')
       .where('BOLD_ID', params.id)
       .first()
 
-    let companiesList =  await Database
-      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
-      .from('Gruppa_voditelei')
-      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+    let sectorsList =  await Database
+      .select('Sektor_raboty.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
+      .from('Sektor_raboty')
+      .innerJoin('Spravochnik', 'Sektor_raboty.BOLD_ID', 'Spravochnik.BOLD_ID')
 
-    console.log(driver);
+    //[ID],[OPTION_NAME]
+    let optionsList =  await Database
+      .select('ID', 'OPTION_NAME')
+      .from('ORDER_OPTION')
 
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('phone.edit', {
+            title: 'Изменение записи телефонного справочника',
+            phone: phone,
+            sectorsList: sectorsList,
+            optionsList: optionsList
         })
   }
 
@@ -120,26 +126,21 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const Telefon_klienta = request.input('Telefon_klienta')
+    const Adres_vyzova_vvodim = request.input('Adres_vyzova_vvodim')
+    const otnositsya_k_sektoru = request.input('otnositsya_k_sektoru')
+    const option_id = request.input('option_id')
 
-    const affectedRows = await Database.table('Voditelj')
+    const affectedRows = await Database.table('Sootvetstvie_parametrov_zakaza')
       .where('BOLD_ID', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'Telefon_klienta': Telefon_klienta,
+        'Adres_vyzova_vvodim': Adres_vyzova_vvodim,
+        'otnositsya_k_sektoru': otnositsya_k_sektoru,
+        'option_id': option_id
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/phones?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +157,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = PhonesDictionaryController

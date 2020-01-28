@@ -1,0 +1,38 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/phones/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать запиcь телефонного справочника</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Телефон</th>
+      <th scope="col">Адрес</th>
+      <th scope="col">Сектор</th>
+      <th scope="col">Количество вызовов</th>
+      <th scope="col">Бонусный счет</th>
+      <th scope="col">Прикрепленная опция</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(phone in phonesList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{phone.Telefon_klienta}}</td>
+      <td>{{phone.Adres_vyzova_vvodim}}</td>
+      <td>{{phone.sectorName}}</td>
+      <td>{{phone.Summarn_chislo_vyzovov}}</td>
+      <td>{{phone.bonus_summ}}</td>
+      <td>{{phone.OPTION_NAME}}</td>
+      <td><a href="/phones/{{phone.BOLD_ID}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const OrderOption = use('App/Models/OrderOption');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class OrderOptionController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,18 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let options = await Database
+      .select('ORDER_OPTION.*', 'PRICE_POLICY.POLICY_NAME as POLICY_NAME')
+      .from('ORDER_OPTION')
+      .leftJoin('PRICE_POLICY', 'ORDER_OPTION.PR_POLICY_ID', 'PRICE_POLICY.ID')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('orderoption.index', {
+            title: 'Опции заказа',
+            optionsList: options
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -63,10 +62,13 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+    const userId = await Database
+      .table('DISTRICTS')
+      .insert({name: 'НОВЫЙ РАЙОН'})
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    console.log(userId);
+
+    response.redirect('/districts?token=' + request.input('token'))
   }
 
   /**
@@ -92,22 +94,19 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let option = await Database
+      .table('ORDER_OPTION')
+      .where('ID', params.id)
       .first()
 
-    let companiesList =  await Database
-      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
-      .from('Gruppa_voditelei')
-      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+    let policyList =  await Database
+        .select('PRICE_POLICY.*')
+        .from('PRICE_POLICY')
 
-    console.log(driver);
-
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('orderoption.edit', {
+            title: 'Изменение опции',
+            option: option,
+            policyList: policyList
         })
   }
 
@@ -120,26 +119,29 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const OPTION_NAME = request.input('OPTION_NAME')
+    const SHORT_NAME = request.input('SHORT_NAME')
+    const PR_POLICY_ID = request.input('PR_POLICY_ID')
+    const IF_DEF = request.input('IF_DEF')
+    const OSUMM_COEFF = request.input('OSUMM_COEFF')
+    const OS_COMPOSED = request.input('OS_COMPOSED')
+    const start_time = request.input('start_time')
+    const end_time = request.input('end_time')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    const affectedRows = await Database.table('ORDER_OPTION')
+      .where('id', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'OPTION_NAME': OPTION_NAME,
+        'SHORT_NAME': SHORT_NAME,
+        'PR_POLICY_ID': PR_POLICY_ID,
+        'IF_DEF': IF_DEF,
+        'OSUMM_COEFF': OSUMM_COEFF,
+        'OS_COMPOSED': OS_COMPOSED
+        //'start_time': start_time,
+        //'end_time': end_time
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/orderoptions?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +158,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = OrderOptionController

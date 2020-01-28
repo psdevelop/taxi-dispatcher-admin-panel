@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const Company = use('App/Models/Company');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class CompanyController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,20 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let companies = await Database
+      .select('Gruppa_voditelei.*', 'Spravochnik.Naimenovanie as companyName',
+        'PRICE_POLICY.POLICY_NAME as POLICY_NAME')
+      .from('Gruppa_voditelei')
+      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+      .leftJoin('PRICE_POLICY', 'Gruppa_voditelei.PR_POLICY_ID', 'PRICE_POLICY.id')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('company.index', {
+            title: 'Компании',
+            companiesList: companies
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -64,9 +65,9 @@ class DriverController {
    */
   async store ({ request, response }) {
     await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+      .raw('EXEC [dbo].[InsertNewDriverCompanyRetID] @bold_id = -1')
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/companies?token=' + request.input('token'))
   }
 
   /**
@@ -92,22 +93,21 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    let companiesList =  await Database
-      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
+    let company = await Database
+      .select('Gruppa_voditelei.*', 'Spravochnik.Naimenovanie as Naimenovanie')
       .from('Gruppa_voditelei')
       .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+      .where('Gruppa_voditelei.BOLD_ID', params.id)
+      .first()
 
-    console.log(driver);
+    let policyList =  await Database
+      .select('PRICE_POLICY.*')
+      .from('PRICE_POLICY')
 
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('company.edit', {
+            title: 'Изменение компании',
+            company: company,
+            policyList: policyList
         })
   }
 
@@ -120,26 +120,22 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const Naimenovanie = request.input('Naimenovanie')
+    const PR_POLICY_ID = request.input('PR_POLICY_ID')
 
-    const affectedRows = await Database.table('Voditelj')
+    await Database.table('Spravochnik')
       .where('BOLD_ID', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'Naimenovanie': Naimenovanie
       });
 
-    let driver = await Database
-      .table('Voditelj')
+    const affectedRows = await Database.table('Gruppa_voditelei')
       .where('BOLD_ID', params.id)
-      .first()
+      .update({
+        'PR_POLICY_ID': PR_POLICY_ID
+      });
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/companies?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +152,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = CompanyController

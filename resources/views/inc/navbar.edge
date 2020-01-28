@@ -1,5 +1,5 @@
 <nav class="navbar navbar-dark bg-primary mb-3 mt-3">
-      <a class="navbar-brand" href="/?token={{token()}}">Taxi Dispatcher App</a>
+      <a class="navbar-brand" href="/?token={{token()}}&main=yes">Taxi Dispatcher App</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -7,18 +7,46 @@
       <div class="collapse navbar-collapse" id="navbarsExample01">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/?token={{token()}}">Главная</a>
+            <a class="nav-link" href="/?token={{token()}}&main=yes">Главная</a>
           </li>
+          @if(token() && token() !== 1)
           <li class="nav-item">
             <a class="nav-link" href="/drivers/?token={{token()}}">Водители</a>
           </li>
-          <!--<li class="nav-item">
-            <a class="nav-link" href="/posts/add">Add Post</a>
+          <li class="nav-item">
+            <a class="nav-link" href="/sectors/?token={{token()}}">Сектора</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/add">Add User</a>
-          </li>-->
+            <a class="nav-link" href="/districts/?token={{token()}}">Районы</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/phones/?token={{token()}}">Телефонный справочник</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/abonents/?token={{token()}}">Абоненты</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/companies/?token={{token()}}">Компании</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/pricepolicies/?token={{token()}}">Тарифные планы</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/ordertariffs/?token={{token()}}">Тарифы поездок</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/orderoptions/?token={{token()}}">Опции заказа</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/settings/0/?token={{token()}}">Настройки</a>
+          </li>
+          <li class="nav-item">
+            <div class="logout-form no_centered">
+              <input id="auth-token" type="hidden" value="{{token()}}" />
+              <a id="logout-button" href="#">Выйти</a>
+            </div>
+          </li>
+          @endif
         </ul>
       </div>
     </nav>

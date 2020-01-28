@@ -1,0 +1,42 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/orderoptions/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать опцию</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Сокращение</th>
+      <th scope="col">Коэффициент</th>
+      <th scope="col">Слагаемое</th>
+      <th scope="col">По умолчанию</th>
+      <th scope="col">Время, с</th>
+      <th scope="col">Время, до</th>
+      <th scope="col">Ценовая политика</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(option in optionsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{option.OPTION_NAME}}</td>
+      <td>{{option.SHORT_NAME}}</td>
+      <td>{{option.OSUMM_COEFF}}</td>
+      <td>{{option.OS_COMPOSED}}</td>
+      <td>{{option.IF_DEF ? 'YES' : 'NO'}}</td>
+      <td>{{dateFormat(option.start_time, 'HH:MM:ss')}}</td>
+      <td>{{dateFormat(option.end_time, 'HH:MM:ss')}}</td>
+      <td>{{option.POLICY_NAME}}</td>
+      <td><a href="/orderoptions/{{option.ID}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

@@ -1,0 +1,59 @@
+@layout('layout')
+
+@section('content')
+    <a href="/pricepolicies/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование тарифного плана</h2>
+    <form action="{{ '/pricepolicies/' + policy.ID + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Наименование</label>
+              <input type="text" class="form-control" value="{{ policy.POLICY_NAME }}" placeholder="Наименование" name="POLICY_NAME">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('POLICY_NAME'), hasErrorFor('POLICY_NAME')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к компании</label>
+              <select name="company_id" id="company_id" class="form-control">
+                @each(company in companiesList)
+                  <option value="{{ company.BOLD_ID }}"
+                    @if(policy.company_id == company.BOLD_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ company.Naimenovanie }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Сокращение</label>
+              <input type="text" class="form-control" value="{{ policy.SHORT_NAME }}" placeholder="Сокращение" name="SHORT_NAME">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('SHORT_NAME'), hasErrorFor('SHORT_NAME')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>По умолчанию</label>
+              <select id="IF_DEF" name="IF_DEF" class="form-control">
+                <option value="0"
+                @if(policy.IF_DEF != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(policy.IF_DEF == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

@@ -1,0 +1,58 @@
+@layout('layout')
+
+@section('content')
+    <a href="/phones/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование записи телефонного справочника</h2>
+    <form action="{{ '/phones/' + phone.BOLD_ID + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Телефон</label>
+              <input type="text" class="form-control" value="{{ phone.Telefon_klienta }}" placeholder="Телефон" name="Telefon_klienta">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Telefon_klienta'), hasErrorFor('Telefon_klienta')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к сектору</label>
+              <select name="otnositsya_k_sektoru" id="otnositsya_k_sektoru" class="form-control">
+                @each(sector in sectorsList)
+                  <option value="{{ sector.BOLD_ID }}"
+                    @if(phone.otnositsya_k_sektoru == sector.BOLD_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ sector.Naimenovanie }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Адрес</label>
+              <input type="text" class="form-control" value="{{ phone.Adres_vyzova_vvodim }}" placeholder="Адрес" name="Adres_vyzova_vvodim">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Adres_vyzova_vvodim'), hasErrorFor('Adres_vyzova_vvodim')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к опции</label>
+              <select name="option_id" id="option_id" class="form-control">
+                @each(option in optionsList)
+                  <option value="{{ option.ID }}"
+                    @if(phone.option_id == option.ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ option.OPTION_NAME }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

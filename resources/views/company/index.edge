@@ -1,0 +1,30 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/companies/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать компанию</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Ценовая политика</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(company in companiesList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{company.companyName}}</td>
+      <td>{{company.POLICY_NAME}}</td>
+      <td><a href="/companies/{{company.BOLD_ID}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

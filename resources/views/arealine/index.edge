@@ -1,0 +1,34 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/arealines/?token={{token()}}" method="POST">
+    <input type="hidden" name="sector_id" value="{{sectorId}}" />
+    <input type="hidden" name="tarif_id" value="{{tarifId}}" />
+    <button type="submit">+ Создать точку</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Порядковый номер</th>
+      <th scope="col">Ширина</th>
+      <th scope="col">Долгота</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(point in pointsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{point.order_num}}</td>
+      <td>{{point.lat}}</td>
+      <td>{{point.lon}}</td>
+      <td><a href="/arealines/{{point.id}}?sector_id={{sectorId}}&tarif_id={{tarifId}}&token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

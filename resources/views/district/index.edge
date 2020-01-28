@@ -1,0 +1,34 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/districts/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать пустой район</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Геопрефикс</th>
+      <th scope="col">Фирма</th>
+      <th scope="col">Сектор по умолчанию</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(district in districtsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{district.name}}</td>
+      <td>{{district.address}}</td>
+      <td>{{district.companyName}}</td>
+      <td>{{district.defaultSectorName}}</td>
+      <td><a href="/districts/{{district.id}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

@@ -1,0 +1,38 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/sectors/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать пустой сектор</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Район</th>
+      <th scope="col">Фирма</th>
+      <th scope="col">Порядок</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(sector in sectorsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{sector.name}}</td>
+      <td>{{sector.districtName}}</td>
+      <td>{{sector.companyName}}</td>
+      <td>{{sector.Podskazka_na_sektore}}</td>
+      <td>
+        <a href="/sectors/{{sector.BOLD_ID}}?token={{token()}}">Изменить</a>
+        <br/>
+        <a href="/arealines/?sector_id={{sector.BOLD_ID}}&tarif_id=0&token={{token()}}">Точки зоны</a>
+      </td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

@@ -1,0 +1,38 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/abonents/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать абонента</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">ФИО</th>
+      <th scope="col">Номер абонента</th>
+      <th scope="col">Количество вызовов</th>
+      <th scope="col">Телефон</th>
+      <th scope="col">Адрес</th>
+      <th scope="col">Прикрепленная опция</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(abonent in abonentsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{abonent.Familiya + ' ' + abonent.Imya + ' ' + abonent.Otchestvo}}</td>
+      <td>{{abonent.Korpus}}</td>
+      <td>{{abonent.Dom}}</td>
+      <td>{{abonent.Rabochii_telefon}}</td>
+      <td>{{abonent.Ulica}}</td>
+      <td>{{abonent.OPTION_NAME}}</td>
+      <td><a href="/abonents/{{abonent.BOLD_ID}}?token={{token()}}">Изменить</a></td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

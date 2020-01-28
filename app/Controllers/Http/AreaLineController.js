@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const AreaLine = use('App/Models/AreaLine');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class AreaLineController {
   constructor() {
     this.data = {}
   }
@@ -24,20 +24,36 @@ class DriverController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+  async index ({ request, response, view }) {
+    const tarifId = request.input('tarif_id');
+    const sectorId = request.input('sector_id');
+    let whereRaw = '';
+
+    if (tarifId > 0) {
+      whereRaw = ' AREA_LINES.tarif_id = ' + tarifId + ' ';
+    }
+
+    if (sectorId > 0) {
+      if (tarifId > 0) {
+        whereRaw += ' AND ';
+      }
+      whereRaw += ' AREA_LINES.sector_id = ' + sectorId + ' ';
+    }
+
+    let points = await Database
+      .select('AREA_LINES.*')
+      .from('AREA_LINES')
+      .whereRaw(whereRaw)
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('arealine.index', {
+            title: 'Точки зоны',
+            pointsList: points,
+            sectorId: sectorId,
+            tarifId: tarifId
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -63,10 +79,19 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+    const sectorId = request.input('sector_id')
+    const tarifId = request.input('tarif_id')
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    await Database
+    .table('AREA_LINES')
+    .insert({
+      sector_id: sectorId,
+      tarif_id: tarifId
+    })
+      //.raw('INSERT INTO AREA_LINES sector_id, tarif_id VALUES ()')
+
+    response.redirect('/arealines/?sector_id=' + sectorId +
+      '&tarif_id=' + tarifId + '&token=' + request.input('token'))
   }
 
   /**
@@ -92,22 +117,17 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let point = await Database
+      .select('*')
+      .from('AREA_LINES')
+      .where('id', params.id)
       .first()
 
-    let companiesList =  await Database
-      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
-      .from('Gruppa_voditelei')
-      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
-
-    console.log(driver);
-
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('arealine.edit', {
+            title: 'Изменение точки',
+            point: point,
+            sectorId: request.input('sector_id'),
+            tarifId: request.input('tarif_id')
         })
   }
 
@@ -120,26 +140,20 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const order_num = request.input('order_num')
+    const lat = request.input('lat')
+    const lon = request.input('lon')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    await Database.table('AREA_LINES')
+      .where('id', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'order_num': order_num,
+        'lat': lat,
+        'lon': lon
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/arealines?sector_id=' + request.input('sector_id') +
+      '&tarif_id=' + request.input('tarif_id') + '&token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +170,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = AreaLineController

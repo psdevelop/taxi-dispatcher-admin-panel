@@ -95,6 +95,10 @@ p {
   text-align: center;
 }
 
+.logout-form, .no_centered {
+  text-align: left;
+}
+
 .auth-form a, .logout-form a {
   color: #6ac;
 }
@@ -105,4 +109,13 @@ p {
 
 .edit-form__div {
   color: #fff;
+}
+
+.scroll-container {
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+.container {
+  font-size: 12px;
 }

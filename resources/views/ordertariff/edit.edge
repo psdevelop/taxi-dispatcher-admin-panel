@@ -1,0 +1,111 @@
+@layout('layout')
+
+@section('content')
+    <a href="/ordertariffs/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование тарифа</h2>
+    <form action="{{ '/ordertariffs/' + tariff.ID + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Наименование</label>
+              <input type="text" class="form-control" value="{{ tariff.TARIF_NAME }}" placeholder="Наименование" name="TARIF_NAME">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('TARIF_NAME'), hasErrorFor('TARIF_NAME')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к тарифу</label>
+              <select name="PR_POLICY_ID" id="PR_POLICY_ID" class="form-control">
+                @each(policy in policyList)
+                  <option value="{{ policy.ID }}"
+                    @if(policy.ID == tariff.PR_POLICY_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ policy.POLICY_NAME }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Тарифный план вне зоны</label>
+              <select name="outher_tplid" id="outher_tplid" class="form-control">
+                @each(policy in policyList)
+                  <option value="{{ policy.ID }}"
+                    @if(policy.ID == tariff.outher_tplid)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ policy.POLICY_NAME }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Тариф вне зоны</label>
+              <select name="outher_tarid" id="outher_tarid" class="form-control">
+                @each(tariffItem in tariffList)
+                  <option value="{{ tariffItem.ID }}"
+                    @if(tariffItem.ID == tariff.outher_tarid)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ tariffItem.TARIF_NAME }}
+                  </option>
+                @endeach
+              <select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Сокращение</label>
+              <input type="text" class="form-control" value="{{ tariff.SHORT_NAME }}" placeholder="Сокращение" name="SHORT_NAME">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('SHORT_NAME'), hasErrorFor('SHORT_NAME')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>По умолчанию</label>
+              <select id="IF_DEF" name="IF_DEF" class="form-control">
+                <option value="0"
+                @if(tariff.IF_DEF != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="1"
+                @if(tariff.IF_DEF == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Тариф, мин</label>
+              <input type="text" class="form-control" value="{{ tariff.TIME_TARIF }}" placeholder="Тариф, мин" name="TIME_TARIF">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('TIME_TARIF'), hasErrorFor('TIME_TARIF')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Тариф, км</label>
+              <input type="text" class="form-control" value="{{ tariff.TMETER_TARIF }}" placeholder="Тариф, км" name="TMETER_TARIF">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('TMETER_TARIF'), hasErrorFor('TMETER_TARIF')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Пропускать каждый n км.</label>
+              <input type="number" class="form-control" value="{{ tariff.miss_every_nkm }}" placeholder="Пропускать каждый n км." name="miss_every_nkm">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('miss_every_nkm'), hasErrorFor('miss_every_nkm')) }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

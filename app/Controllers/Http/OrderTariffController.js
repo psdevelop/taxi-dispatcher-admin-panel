@@ -4,13 +4,13 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Driver = use('App/Models/Driver');
+const OrderTariff = use('App/Models/OrderTariff');
 const Database = use('Database');
 
 /**
  * Resourceful controller for interacting with contacts
  */
-class DriverController {
+class OrderTariffController {
   constructor() {
     this.data = {}
   }
@@ -25,19 +25,21 @@ class DriverController {
    * @param {View} ctx.view
    */
   async index ({ view }) {
-    let drivers = await Database
-      .select('Voditelj.*', 'Spravochnik.Naimenovanie as companyName')
-      .from('Voditelj')
-      .innerJoin('Spravochnik', 'Voditelj.otnositsya_k_gruppe', 'Spravochnik.BOLD_ID')
-      .orderBy('Pozyvnoi', 'asc')
+    let tariffs = await Database
+      .raw('select ot.* , pp1.POLICY_NAME as POLICY_NAME, ' +
+        ' pp2.POLICY_NAME as outherPolicyName, oot.TARIF_NAME as outherTarifName ' +
+        ' from ORDER_TARIF ot ' +
+        ' left Join PRICE_POLICY pp1 on ot.PR_POLICY_ID = pp1.ID ' +
+        ' left Join PRICE_POLICY pp2 on ot.outher_tplid = pp2.ID ' +
+        ' left Join ORDER_TARIF oot on ot.outher_tarid = oot.ID ')
 
     //return response.json(contacts)
     //console.log(contacts.toJSON());
     //this.data.contacts = contacts.toJSON()
 
-    return view.render('driver.index', {
-            title: 'Водители',
-            driversList: drivers
+    return view.render('ordertariff.index', {
+            title: 'Тарифы поездок',
+            tariffsList: tariffs
         })
     //yield response.sendView('contactList', this.data)
   }
@@ -63,10 +65,13 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    await Database
-      .raw('EXEC [dbo].[InsertNewDriverRetID] @bold_id = -1')
+    const userId = await Database
+      .table('DISTRICTS')
+      .insert({name: 'НОВЫЙ РАЙОН'})
 
-    response.redirect('/drivers?token=' + request.input('token'))
+    console.log(userId);
+
+    response.redirect('/districts?token=' + request.input('token'))
   }
 
   /**
@@ -92,22 +97,24 @@ class DriverController {
    */
   async edit ({ params, request, response, view }) {
     //let driver = await Driver.find('BOLD_ID', params.id)
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
+    let tariff = await Database
+      .table('ORDER_TARIF')
+      .where('ID', params.id)
       .first()
 
-    let companiesList =  await Database
-      .select('Gruppa_voditelei.BOLD_ID as BOLD_ID', 'Spravochnik.Naimenovanie as Naimenovanie')
-      .from('Gruppa_voditelei')
-      .innerJoin('Spravochnik', 'Gruppa_voditelei.BOLD_ID', 'Spravochnik.BOLD_ID')
+    let policyList =  await Database
+      .select('PRICE_POLICY.*')
+      .from('PRICE_POLICY')
 
-    console.log(driver);
+    let tariffList =  await Database
+      .select('ORDER_TARIF.*')
+      .from('ORDER_TARIF')
 
-    return view.render('driver.edit', {
-            title: 'Изменение водителя',
-            driver: driver,
-            companiesList: companiesList
+    return view.render('ordertariff.edit', {
+            title: 'Изменение тарифа',
+            tariff: tariff,
+            policyList: policyList,
+            tariffList: tariffList
         })
   }
 
@@ -120,26 +127,31 @@ class DriverController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const Pozyvnoi = request.input('Pozyvnoi')
-    const REMOTE_LOGIN = request.input('REMOTE_LOGIN')
-    const Gos_nomernoi_znak = request.input('Gos_nomernoi_znak')
-    const Marka_avtomobilya = request.input('Marka_avtomobilya')
+    const TARIF_NAME = request.input('TARIF_NAME')
+    const PR_POLICY_ID = request.input('PR_POLICY_ID')
+    const outher_tplid = request.input('outher_tplid')
+    const outher_tarid = request.input('outher_tarid')
+    const SHORT_NAME = request.input('SHORT_NAME')
+    const IF_DEF = request.input('IF_DEF')
+    const TIME_TARIF = request.input('TIME_TARIF')
+    const TMETER_TARIF = request.input('TMETER_TARIF')
+    const miss_every_nkm = request.input('miss_every_nkm')
 
-    const affectedRows = await Database.table('Voditelj')
-      .where('BOLD_ID', params.id)
+    const affectedRows = await Database.table('ORDER_TARIF')
+      .where('ID', params.id)
       .update({
-        'Pozyvnoi': Pozyvnoi,
-        'REMOTE_LOGIN': REMOTE_LOGIN,
-        'Gos_nomernoi_znak': Gos_nomernoi_znak,
-        'Marka_avtomobilya': Marka_avtomobilya
+        'TARIF_NAME': TARIF_NAME,
+        'PR_POLICY_ID': PR_POLICY_ID,
+        'outher_tplid': outher_tplid,
+        'outher_tarid': outher_tarid,
+        'SHORT_NAME': SHORT_NAME,
+        'IF_DEF': IF_DEF,
+        'TIME_TARIF': TIME_TARIF,
+        'TMETER_TARIF': TMETER_TARIF,
+        'miss_every_nkm': miss_every_nkm
       });
 
-    let driver = await Database
-      .table('Voditelj')
-      .where('BOLD_ID', params.id)
-      .first()
-
-    response.redirect('/drivers?token=' + request.input('token'))
+    response.redirect('/ordertariffs?token=' + request.input('token'))
     //return response.json(affectedRows)
   }
 
@@ -156,4 +168,4 @@ class DriverController {
   }
 }
 
-module.exports = DriverController
+module.exports = OrderTariffController

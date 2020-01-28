@@ -1,0 +1,37 @@
+@layout('layout')
+
+@section('content')
+    <a href="/arealines/?token={{token()}}" class="btn btn-primary">Назад</a>
+    <hr>
+    <div class="edit-form__div">
+    <h2>Редактирование точки</h2>
+    <form action="{{ '/arealines/' + point.id + '?_method=PUT' }}" method="POST">
+        {{ csrfField() }}
+        <input type="hidden" value="{{token()}}" name="token"/>
+        <input type="hidden" name="sector_id" value="{{sectorId}}" />
+        <input type="hidden" name="tarif_id" value="{{tarifId}}" />
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Ширина</label>
+              <input type="text" class="form-control" value="{{ point.lat }}" placeholder="Ширина" name="lat">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('lat'), hasErrorFor('lat')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Долгота</label>
+              <input type="text" class="form-control" value="{{ point.lon }}" placeholder="Долгота" name="lon">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('lon'), hasErrorFor('lon')) }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Порядок</label>
+              <input type="text" class="form-control" value="{{ point.order_num }}" placeholder="Порядок" name="order_num">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('order_num'), hasErrorFor('order_num')) }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    </div>
+@endsection

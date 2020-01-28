@@ -1,0 +1,48 @@
+@layout('layout')
+@section('content')
+  <h2 class="dict__header">{{ title }}</h2>
+  <form action="/tariffs/?token={{token()}}" method="POST">
+    <button type="submit">+ Создать тариф</button>
+  </form>
+  <div class="scroll-container">
+  <table class="table table-dark fixed-table__row">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Наименование</th>
+      <th scope="col">Тариф 1 мин.</th>
+      <th scope="col">Тариф 1 км.</th>
+      <th scope="col">Сокращение</th>
+      <th scope="col">По умолчанию</th>
+      <th scope="col">Пропускать каждый n км.</th>
+      <th scope="col">Тариф вне зоны</th>
+      <th scope="col">Тар. план вне зоны</th>
+      <th scope="col">Тар. план</th>
+      <th scope="col">Действие</th>
+    </tr>
+  </thead>
+  <tbody>
+    @each(tariff in tariffsList)
+    <tr>
+      <td scope="row">-</td>
+      <td>{{tariff.TARIF_NAME}}</td>
+      <td>{{tariff.TIME_TARIF}}</td>
+      <td>{{tariff.TMETER_TARIF}}</td>
+      <td>{{tariff.SHORT_NAME}}</td>
+      <td>{{tariff.IF_DEF ? 'YES' : 'NO'}}</td>
+      <td>{{tariff.miss_every_nkm}}</td>
+      <td>{{tariff.outherTarifName}}</td>
+      <td>{{tariff.outherPolicyName}}</td>
+      <td>{{tariff.POLICY_NAME}}</td>
+      <td>
+        <a href="/ordertariffs/{{tariff.ID}}?token={{token()}}">Изменить</a>
+        <br/>
+        <a href="/arealines/?sector_id=0&tarif_id={{tariff.ID}}&token={{token()}}">Точки зоны</a>
+      </td>
+    </tr>
+    @endeach
+  </tbody>
+</table>
+</div>
+
+@endsection

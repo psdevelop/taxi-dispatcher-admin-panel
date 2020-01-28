@@ -1,171 +1,293 @@
 @layout('layout')
 
 @section('content')
-    <a href="/posts" class="btn btn-primary">Go Back</a>
+    <a href="/drivers/?token={{token()}}" class="btn btn-primary">Назад</a>
     <hr>
     <div class="edit-form__div">
     <h2>Редактирование водителя</h2>
     <form action="{{ '/drivers/' + driver.BOLD_ID + '?_method=PUT' }}" method="POST">
         {{ csrfField() }}
         <input type="hidden" value="{{token()}}" name="token"/>
-        <div class="form-group">
-            <label>Позывной</label>
-            <input type="text" class="form-control" value="{{ driver.Pozyvnoi }}" placeholder="Позывной" name="Pozyvnoi">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Pozyvnoi'), hasErrorFor('Pozyvnoi')) }}
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Позывной</label>
+              <input type="text" class="form-control" value="{{ driver.Pozyvnoi }}" placeholder="Позывной" name="Pozyvnoi">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Pozyvnoi'), hasErrorFor('Pozyvnoi')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Логин</label>
+              <input type="text" class="form-control" value="{{ driver.REMOTE_LOGIN }}" placeholder="Логин" name="REMOTE_LOGIN">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('REMOTE_LOGIN'), hasErrorFor('REMOTE_LOGIN')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Логин</label>
-            <input type="text" class="form-control" value="{{ driver.REMOTE_LOGIN }}" placeholder="Логин" name="REMOTE_LOGIN">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('REMOTE_LOGIN'), hasErrorFor('REMOTE_LOGIN')) }}
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Гос. номерной знак</label>
+              <input type="text" class="form-control" value="{{ driver.Gos_nomernoi_znak }}" placeholder="Гос. номерной знак" name="Gos_nomernoi_znak">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Gos_nomernoi_znak'), hasErrorFor('Gos_nomernoi_znak')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Марка автомобиля</label>
+              <input type="text" class="form-control" value="{{ driver.Marka_avtomobilya }}" placeholder="Марка автомобиля" name="Marka_avtomobilya">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Marka_avtomobilya'), hasErrorFor('Marka_avtomobilya')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Гос. номерной знак</label>
-            <input type="text" class="form-control" value="{{ driver.Gos_nomernoi_znak }}" placeholder="Гос. номерной знак" name="Gos_nomernoi_znak">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Gos_nomernoi_znak'), hasErrorFor('Gos_nomernoi_znak')) }}
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Пароль водителя</label>
+              <input type="password" class="form-control" value="XXXXXXXXXXX" placeholder="Пароль" name="REMOTE_PASSWORD">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('REMOTE_PASSWORD'), hasErrorFor('REMOTE_PASSWORD')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Разрешить приложение</label>
+              <select id="ITS_REMOTE_CLIENT" name="ITS_REMOTE_CLIENT" class="form-control">
+                <option value="0"
+                @if(driver.ITS_REMOTE_CLIENT != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.ITS_REMOTE_CLIENT == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Марка автомобиля</label>
-            <input type="text" class="form-control" value="{{ driver.Marka_avtomobilya }}" placeholder="Марка автомобиля" name="Marka_avtomobilya">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Marka_avtomobilya'), hasErrorFor('Marka_avtomobilya')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Разрешить перемещаться между секторами</label>
+              <select id="EN_MOVING" name="EN_MOVING" class="form-control">
+                <option value="0"
+                @if(driver.EN_MOVING != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.EN_MOVING == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Включить GPS мониторинг</label>
+              <select id="USE_GPS" name="USE_GPS" class="form-control">
+                <option value="0"
+                @if(driver.USE_GPS != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.USE_GPS == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Пароль водителя</label>
-            <input type="password" class="form-control" value="XXXXXXXXXXX" placeholder="Пароль" name="REMOTE_PASSWORD">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('REMOTE_PASSWORD'), hasErrorFor('REMOTE_PASSWORD')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>GTS Аккаунт ID</label>
+              <input type="text" class="form-control" value="{{ driver.GTSS_ACCT_ID }}" placeholder="GTS Аккаунт ID" name="GTSS_ACCT_ID">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('GTSS_ACCT_ID'), hasErrorFor('GTSS_ACCT_ID')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>GTS ID Устройства</label>
+              <input type="text" class="form-control" value="{{ driver.GTSS_DEV_ID }}" placeholder="GTS ID Устройства" name="GTSS_DEV_ID">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('GTSS_DEV_ID'), hasErrorFor('GTSS_DEV_ID')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Разрешить приложение</label>
-            <input type="checkbox" class="form-control" placeholder="Пароль" name="ITS_REMOTE_CLIENT" {{ driver.ITS_REMOTE_CLIENT ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('ITS_REMOTE_CLIENT'), hasErrorFor('ITS_REMOTE_CLIENT')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Использовать динамический баланс</label>
+              <select id="use_dyn_balance" name="use_dyn_balance" class="form-control">
+                <option value="0"
+                @if(driver.use_dyn_balance != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.use_dyn_balance == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label>Блокировать по динамическому балансу</label>
+              <select id="rlock_on_calc_debt" name="rlock_on_calc_debt" class="form-control">
+                <option value="0"
+                @if(driver.rlock_on_calc_debt != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.rlock_on_calc_debt == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Разрешить перемещаться между секторами</label>
-            <input type="checkbox" class="form-control" placeholder="Пароль" name="EN_MOVING" {{ driver.EN_MOVING ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('EN_MOVING'), hasErrorFor('EN_MOVING')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Индивидуальный процент (0,1 - 10%)</label>
+              <input type="text" class="form-control" value="{{ driver.Individ_procent }}" placeholder="Индивидуальный процент (0,1 - 10%)" name="Individ_procent">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Individ_procent'), hasErrorFor('Individ_procent')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Отчислять ежедневно</label>
+              <select id="manual_day_sale" name="manual_day_sale" class="form-control">
+                <option value="0"
+                @if(driver.manual_day_sale != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.manual_day_sale == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Включить GPS мониторинг</label>
-            <input type="checkbox" class="form-control" placeholder="Пароль" name="USE_GPS" {{ driver.USE_GPS ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('USE_GPS'), hasErrorFor('USE_GPS')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Сумма ежедневного отчета</label>
+              <input type="number" class="form-control" value="{{ driver.day_payment }}" placeholder="Сумма ежедневного отчета" name="day_payment">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('day_payment'), hasErrorFor('day_payment')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Требовать GPS</label>
+              <select id="require_gps" name="require_gps" class="form-control">
+                <option value="0"
+                @if(driver.require_gps != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.require_gps == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>GTS Аккаунт ID</label>
-            <input type="text" class="form-control" value="{{ driver.GTSS_ACCT_ID }}" placeholder="GTS Аккаунт ID" name="GTSS_ACCT_ID">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('GTSS_ACCT_ID'), hasErrorFor('GTSS_ACCT_ID')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Звук1</label>
+              <input type="number" class="form-control" value="{{ driver.avar1 }}" placeholder="Звук1" name="avar1">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar1'), hasErrorFor('avar1')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Звук2</label>
+              <input type="number" class="form-control" value="{{ driver.avar2 }}" placeholder="Звук2" name="avar2">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar2'), hasErrorFor('avar2')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>GTS ID Устройства</label>
-            <input type="text" class="form-control" value="{{ driver.GTSS_DEV_ID }}" placeholder="GTS ID Устройства" name="GTSS_DEV_ID">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('GTSS_DEV_ID'), hasErrorFor('GTSS_DEV_ID')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Звук3</label>
+              <input type="number" class="form-control" value="{{ driver.avar3 }}" placeholder="Звук3" name="avar3">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar3'), hasErrorFor('avar3')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Звук4</label>
+              <input type="number" class="form-control" value="{{ driver.avar4 }}" placeholder="Звук4" name="avar4">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar4'), hasErrorFor('avar4')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Использовать динамический баланс</label>
-            <input type="checkbox" class="form-control" placeholder="Использовать динамический баланс" name="use_dyn_balance" {{ driver.use_dyn_balance ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('use_dyn_balance'), hasErrorFor('use_dyn_balance')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Звук5</label>
+              <input type="number" class="form-control" value="{{ driver.avar5 }}" placeholder="Звук5" name="avar5">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar5'), hasErrorFor('avar5')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Звук6</label>
+              <input type="number" class="form-control" value="{{ driver.avar6 }}" placeholder="Звук6" name="avar6">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar6'), hasErrorFor('avar6')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Блокировать по динамическому балансу</label>
-            <input type="checkbox" class="form-control" placeholder="Блокировать по динамическому балансу" name="rlock_on_calc_debt" {{ driver.rlock_on_calc_debt ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('rlock_on_calc_debt'), hasErrorFor('rlock_on_calc_debt')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Звук7</label>
+              <input type="number" class="form-control" value="{{ driver.avar7 }}" placeholder="Звук" name="avar7">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar7'), hasErrorFor('avar7')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Звук8</label>
+              <input type="number" class="form-control" value="{{ driver.avar8 }}" placeholder="Звук8" name="avar8">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar8'), hasErrorFor('avar8')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Индивидуальный процент (0,1 - 10%)</label>
-            <input type="text" class="form-control" value="{{ driver.Individ_procent }}" placeholder="Индивидуальный процент (0,1 - 10%)" name="Individ_procent">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('Individ_procent'), hasErrorFor('Individ_procent')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Звук9</label>
+              <input type="number" class="form-control" value="{{ driver.avar9 }}" placeholder="Звук9" name="avar9">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar9'), hasErrorFor('avar9')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Звук10</label>
+              <input type="number" class="form-control" value="{{ driver.avar10 }}" placeholder="Звук10" name="avar10">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar10'), hasErrorFor('avar10')) }}
+          </div>
         </div>
-        <div class="form-group">
-            <label>Отчислять ежедневно</label>
-            <input type="checkbox" class="form-control" placeholder="Отчислять ежедневно" name="manual_day_sale" {{ driver.manual_day_sale ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('manual_day_sale'), hasErrorFor('manual_day_sale')) }}
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Дополнительные пар-ры инициализации</label>
+              <input type="text" class="form-control" value="{{ driver.addit_rem_params }}" placeholder="Дополнительные пар-ры инициализации" name="addit_rem_params">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('addit_rem_params'), hasErrorFor('addit_rem_params')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Фикс. в день + фикс. за заявку</label>
+              <select id="fix_order_pay_with_daily_pay" name="fix_order_pay_with_daily_pay" class="form-control">
+                <option value="0"
+                @if(driver.fix_order_pay_with_daily_pay != 1)
+                  selected="selected"
+                @endif
+                >NO</options>
+                <option value="0"
+                @if(driver.fix_order_pay_with_daily_pay == 1)
+                  selected="selected"
+                @endif
+                >YES</options>
+              </select>
+          </div>
         </div>
-        <div class="form-group">
-            <label>Сумма ежедневного отчета</label>
-            <input type="number" class="form-control" value="{{ driver.day_payment }}" placeholder="Сумма ежедневного отчета" name="day_payment">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('day_payment'), hasErrorFor('day_payment')) }}
-        </div>
-        <div class="form-group">
-            <label>Требовать GPS</label>
-            <input type="checkbox" class="form-control" placeholder="Требовать GPS" name="require_gps" {{ driver.require_gps ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('require_gps'), hasErrorFor('require_gps')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук1</label>
-            <input type="number" class="form-control" value="{{ driver.avar1 }}" placeholder="Звук1" name="avar1">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar1'), hasErrorFor('avar1')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук2</label>
-            <input type="number" class="form-control" value="{{ driver.avar2 }}" placeholder="Звук2" name="avar2">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar2'), hasErrorFor('avar2')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук3</label>
-            <input type="number" class="form-control" value="{{ driver.avar3 }}" placeholder="Звук3" name="avar3">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar3'), hasErrorFor('avar3')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук4</label>
-            <input type="number" class="form-control" value="{{ driver.avar4 }}" placeholder="Звук4" name="avar4">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar4'), hasErrorFor('avar4')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук5</label>
-            <input type="number" class="form-control" value="{{ driver.avar5 }}" placeholder="Звук5" name="avar5">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar5'), hasErrorFor('avar5')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук6</label>
-            <input type="number" class="form-control" value="{{ driver.avar6 }}" placeholder="Звук6" name="avar6">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar6'), hasErrorFor('avar6')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук7</label>
-            <input type="number" class="form-control" value="{{ driver.avar7 }}" placeholder="Звук" name="avar7">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar7'), hasErrorFor('avar7')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук8</label>
-            <input type="number" class="form-control" value="{{ driver.avar8 }}" placeholder="Звук8" name="avar8">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar8'), hasErrorFor('avar8')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук9</label>
-            <input type="number" class="form-control" value="{{ driver.avar9 }}" placeholder="Звук9" name="avar9">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar9'), hasErrorFor('avar9')) }}
-        </div>
-        <div class="form-group">
-            <label>Звук10</label>
-            <input type="number" class="form-control" value="{{ driver.avar10 }}" placeholder="Звук10" name="avar10">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('avar10'), hasErrorFor('avar10')) }}
-        </div>
-        <div class="form-group">
-            <label>Дополнительные пар-ры инициализации</label>
-            <input type="text" class="form-control" value="{{ driver.addit_rem_params }}" placeholder="Дополнительные пар-ры инициализации" name="addit_rem_params">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('addit_rem_params'), hasErrorFor('addit_rem_params')) }}
-        </div>
-        <div class="form-group">
-            <label>Фикс. в день + фикс. за заявку</label>
-            <input type="checkbox" class="form-control" placeholder="Фикс. в день + фикс. за заявку" name="fix_order_pay_with_daily_pay" {{ driver.fix_order_pay_with_daily_pay ? 'checked' : '' }}>
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('fix_order_pay_with_daily_pay'), hasErrorFor('fix_order_pay_with_daily_pay')) }}
-        </div>
-        <div class="form-group">
-            <label>Номер телефона</label>
-            <input type="text" class="form-control" value="{{ driver.phone_number }}" placeholder="Номер телефона" name="phone_number">
-            {{ elIf('<span class="text-danger">$self</span>', getErrorFor('phone_number'), hasErrorFor('phone_number')) }}
-        </div>
-        <div class="form-group">
-            <label>Привязка к фирме</label>
-            <select name="otnositsya_k_gruppe" id="otnositsya_k_gruppe">
-              @each(company in companiesList)
-                <option value="{{ company.BOLD_ID }}"
-                  @if(driver.otnositsya_k_gruppe == company.BOLD_ID)
-                    selected="selected"
-                  @endif
-                >
-                  {{ company.Naimenovanie }}
-                </option>
-              @endeach
-            <select>
+
+        <div class="row">
+          <div class="form-group col-md-6">
+              <label>Номер телефона</label>
+              <input type="text" class="form-control" value="{{ driver.phone_number }}" placeholder="Номер телефона" name="phone_number">
+              {{ elIf('<span class="text-danger">$self</span>', getErrorFor('phone_number'), hasErrorFor('phone_number')) }}
+          </div>
+          <div class="form-group col-md-6">
+              <label>Привязка к фирме</label>
+              <select name="otnositsya_k_gruppe" id="otnositsya_k_gruppe" class="form-control">
+                @each(company in companiesList)
+                  <option value="{{ company.BOLD_ID }}"
+                    @if(driver.otnositsya_k_gruppe == company.BOLD_ID)
+                      selected="selected"
+                    @endif
+                  >
+                    {{ company.Naimenovanie }}
+                  </option>
+                @endeach
+              <select>
+          </div>
         </div>
         <!--<div class="form-group">
             <label>Body</label>
